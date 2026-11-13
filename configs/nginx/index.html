@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Task Manager</title></head>
+<body>
+  <h1>Task Manager</h1>
+  <ul id="list"></ul>
+  <script>
+    fetch("/api/tasks")
+      .then(r => r.json())
+      .then(tasks => {
+        const ul = document.getElementById("list");
+        tasks.forEach(t => {
+          const li = document.createElement("li");
+          li.textContent = t.title;
+          ul.appendChild(li);
+        });
+      })
+      .catch(() => {
+        document.getElementById("list").textContent = "API unavailable";
+      });
+  </script>
+</body>
+</html>
