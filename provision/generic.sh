@@ -23,6 +23,6 @@ systemctl enable snmpd
 systemctl restart snmpd
 
 # cron heartbeat: updates the file modification time every minute
-echo '* * * * * root touch /var/tmp/heartbeat' > /etc/cron.d/heartbeat
+echo '* * * * * root touch /var/lib/heartbeat' > /etc/cron.d/heartbeat
 chmod 644 /etc/cron.d/heartbeat
-touch /var/tmp/heartbeat
+touch /var/lib/heartbeat
