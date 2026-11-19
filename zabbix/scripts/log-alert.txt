@@ -1,0 +1,13 @@
+Frontend: Alerts > Scripts > Create script
+  Name:        Log alert
+  Scope:       Action operation
+  Type:        Script
+  Execute on:  Zabbix server
+  Commands:
+
+echo "`date '+%F %T'` {EVENT.SEVERITY} {HOST.NAME}: {EVENT.NAME} [{EVENT.STATUS}]" >> /var/log/zabbix/alerts.log
+
+Used by the trigger action "Log problems" (operation + recovery operation, target: current host).
+Result example:
+  2026-11-19 22:45:26 High web01: Nginx: Process is not running [PROBLEM]
+  2026-11-19 22:52:26 High web01: Nginx: Process is not running [RESOLVED]

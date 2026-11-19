@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 480" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="868" height="478" rx="14" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="435" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2328">Monitoring lab: Vagrant + VirtualBox on one host</text>
+
+  <!-- monitoring servers -->
+  <rect x="150" y="64" width="250" height="96" rx="10" fill="#fff4e5" stroke="#d9822b" stroke-width="2"/>
+  <text x="275" y="94" text-anchor="middle" font-size="17" font-weight="700" fill="#7a4300">nagios01</text>
+  <text x="275" y="116" text-anchor="middle" font-size="13" fill="#7a4300">192.168.56.10 · Nagios Core 4.5.14</text>
+  <text x="275" y="138" text-anchor="middle" font-size="12" fill="#7a4300">checks · NRPE · custom plugins</text>
+
+  <rect x="470" y="64" width="250" height="96" rx="10" fill="#fdecea" stroke="#d40000" stroke-width="2"/>
+  <text x="595" y="94" text-anchor="middle" font-size="17" font-weight="700" fill="#8a0000">zabbix01</text>
+  <text x="595" y="116" text-anchor="middle" font-size="13" fill="#8a0000">192.168.56.11 · Zabbix 7.0 LTS</text>
+  <text x="595" y="138" text-anchor="middle" font-size="12" fill="#8a0000">agents · templates · auto registration</text>
+
+  <!-- links to the network -->
+  <line x1="275" y1="160" x2="275" y2="212" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="595" y1="160" x2="595" y2="212" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- network band -->
+  <rect x="30" y="214" width="810" height="36" rx="8" fill="#ddf4ff" stroke="#54aeff"/>
+  <text x="435" y="238" text-anchor="middle" font-size="14" font-weight="600" fill="#0550ae">Host-only network 192.168.56.0/24</text>
+
+  <!-- links to targets -->
+  <line x1="120" y1="250" x2="120" y2="296" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="335" y1="250" x2="335" y2="296" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="550" y1="250" x2="550" y2="296" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="765" y1="250" x2="765" y2="296" stroke="#57606a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- targets -->
+  <rect x="35" y="298" width="170" height="100" rx="10" fill="#f6f8fa" stroke="#8c959f" stroke-width="2"/>
+  <text x="120" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2328">web01</text>
+  <text x="120" y="347" text-anchor="middle" font-size="12" fill="#57606a">192.168.56.21</text>
+  <text x="120" y="368" text-anchor="middle" font-size="12" fill="#57606a">Nginx :80</text>
+  <text x="120" y="385" text-anchor="middle" font-size="12" fill="#57606a">reverse proxy</text>
+
+  <rect x="250" y="298" width="170" height="100" rx="10" fill="#f6f8fa" stroke="#8c959f" stroke-width="2"/>
+  <text x="335" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2328">app01</text>
+  <text x="335" y="347" text-anchor="middle" font-size="12" fill="#57606a">192.168.56.22</text>
+  <text x="335" y="368" text-anchor="middle" font-size="12" fill="#57606a">Gunicorn + Flask :5000</text>
+  <text x="335" y="385" text-anchor="middle" font-size="12" fill="#57606a">Task Manager API</text>
+
+  <rect x="465" y="298" width="170" height="100" rx="10" fill="#f6f8fa" stroke="#8c959f" stroke-width="2"/>
+  <text x="550" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2328">db01</text>
+  <text x="550" y="347" text-anchor="middle" font-size="12" fill="#57606a">192.168.56.23</text>
+  <text x="550" y="368" text-anchor="middle" font-size="12" fill="#57606a">MySQL 8 :3306</text>
+  <text x="550" y="385" text-anchor="middle" font-size="12" fill="#57606a">taskdb</text>
+
+  <rect x="680" y="298" width="170" height="100" rx="10" fill="#f6f8fa" stroke="#8c959f" stroke-width="2"/>
+  <text x="765" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2328">generic01</text>
+  <text x="765" y="347" text-anchor="middle" font-size="12" fill="#57606a">192.168.56.24</text>
+  <text x="765" y="368" text-anchor="middle" font-size="12" fill="#57606a">Apache :8080 · SNMP</text>
+  <text x="765" y="385" text-anchor="middle" font-size="12" fill="#57606a">cron heartbeat</text>
+
+  <!-- request flow between the application tiers -->
+  <line x1="205" y1="348" x2="248" y2="348" stroke="#1a7f37" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="420" y1="348" x2="463" y2="348" stroke="#1a7f37" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="435" y="428" text-anchor="middle" font-size="13" fill="#1a7f37" font-weight="600">Request flow: browser → web01 (/api/) → app01 → db01</text>
+  <text x="435" y="456" text-anchor="middle" font-size="12" fill="#57606a">Both monitoring servers watch the same four targets</text>
+</svg>

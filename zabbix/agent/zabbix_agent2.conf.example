@@ -1,0 +1,7 @@
+# Relevant lines of /etc/zabbix/zabbix_agent2.conf on every target VM
+Server=192.168.56.11
+ServerActive=192.168.56.11
+Hostname=web01            # must match the host name in Zabbix: web01 / app01 / db01 / generic01
+
+# Auto registration only (web01 and generic01). The Zabbix action matches this value.
+HostMetadata=web-server   # generic01 uses: generic-linux
