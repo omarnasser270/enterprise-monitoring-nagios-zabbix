@@ -30,7 +30,7 @@ the monitoring servers and the failure scenarios are all reproducible.
 - Real failure scenarios with alerts, recovery and screenshots.
 - Fully reproducible with Vagrant; every problem met along the way is documented.
 
-**Contents:** [Architecture](#architecture) · [What is monitored](#what-is-monitored) · [How to run](#how-to-run) · [Failure scenarios](#failure-scenarios) · [Dashboards](#dashboards) · [Problems solved](#problems-found-and-solved) · [Layout](#repository-layout)
+**Contents:** [Architecture](#architecture) · [What is monitored](#what-is-monitored) · [How to run](#how-to-run) · [Failure scenarios](#failure-scenarios) · [Screenshots](#screenshots) · [Problems solved](#problems-found-and-solved) · [Layout](#repository-layout)
 
 ## Architecture
 
@@ -49,13 +49,15 @@ Request flow: `browser -> web01 (Nginx :80) -> /api/ -> app01 (Gunicorn :5000) -
 
 ### Nagios (`nagios/`)
 
-- Agentless checks from nagios01 (PING, HTTP, API health, SNMP).
-- **NRPE** on app01 and generic01 for local checks (load, disk, processes, file age).
+- 24 service checks across 5 hosts (the 4 targets and nagios01 itself).
+- Agentless checks from nagios01: PING on every host, HTTP on web01, MySQL port on db01, Apache on 8080 on generic01.
+- **NRPE** on app01 and generic01 for local checks: load, disk, processes (Gunicorn, Apache) and the age of a heartbeat file.
 - Two custom plugins written for this project:
   - `check_app_health.sh` (Bash): calls `/health`, maps HTTP 200 to OK and 503/connection error to CRITICAL.
   - `check_app_tasks.py` (Python): reads `/metrics-custom`, WARNING above 10 pending tasks, CRITICAL above 20.
 - Host and service notifications by local mail.
 - Full object definitions are in `nagios/config/`, plugins in `nagios/plugins/`, NRPE commands in `nagios/nrpe/`.
+- How the files are installed and tested: [`docs/nagios-setup.md`](docs/nagios-setup.md).
 
 ### Zabbix (`zabbix/`)
 
@@ -123,9 +125,43 @@ for i in $(seq 1 9); do curl -s -X POST -H 'Content-Type: application/json' -d '
 
 The same threshold is applied by the Nagios plugin `check_app_tasks.py`.
 
-## Dashboards
+### 3. Stop the API on app01 (Nagios)
 
-![Global view](docs/screenshots/zabbix-global-view.png)
+```bash
+vagrant ssh app01 -c "sudo systemctl stop taskmanager"
+```
+
+Three services go CRITICAL: `Task Manager API Health` (cannot connect to API), `Task Manager Pending Tasks`
+(connection refused) and `Gunicorn Process NRPE` (0 processes). They reach the `HARD` state after 4 failed attempts:
+
+![Nagios failure](docs/screenshots/nagios-failure-critical.png)
+
+Nagios only alerts on `HARD` states. The first test below shows this: the service came back after one minute,
+so it stayed in `SOFT` and nothing was sent. In the second test the API stayed down, the state became `HARD`,
+and after `sudo systemctl start taskmanager` every check recovered:
+
+```
+[10:30:22] app01;Task Manager API Health;CRITICAL;SOFT;1
+[10:31:23] app01;Task Manager API Health;OK;SOFT;2             <- recovered before HARD, no alert
+[10:50:23] app01;Task Manager API Health;CRITICAL;HARD;4
+[10:52:38] app01;Gunicorn Process NRPE;CRITICAL;HARD;4
+[10:55:23] app01;Task Manager API Health;OK;HARD;1
+[10:57:38] app01;Gunicorn Process NRPE;OK;HARD;1
+```
+
+![Nagios alert history](docs/screenshots/nagios-alert-history.png)
+
+## Screenshots
+
+**Nagios: all services**
+
+![Nagios services](docs/screenshots/nagios-services.png)
+
+**Nagios: hosts**
+
+![Nagios hosts](docs/screenshots/nagios-hosts.png)
+
+**Zabbix: capacity planning dashboard**
 
 ![Capacity planning](docs/screenshots/zabbix-capacity-planning.png)
 
